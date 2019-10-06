@@ -73,12 +73,12 @@ def func():
 
                 except Exception as e:
                     print(e)
-    if "o que é" or "quem é" in l == True:
+    if ("o que é") or ("quem é") in l == True:
         wikipedia.set_lang('pt')
-        search = wikipedia.summary(l, sentences=2)
+        search = wikipedia.summary(l, sentences=1)
         Speech(search, lang).play()     
-               
-    if "noticias" or "notícias" in l == True:
+
+    if ("noticias") or ("notícias") in l == True:
         top_headlines = newsapi.get_top_headlines(country='br')
         for news in top_headlines['articles'][:5]:
             text = (news['title'])
