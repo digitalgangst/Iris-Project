@@ -1,19 +1,18 @@
 #!/usr/bin/python3
 # coding: utf-8
 import snowboydecoder, pyttsx3, os.path, wave, requests, os
-from time import gmtime, strftime
 import speech_recognition as iris
+import threading, re
+import wikipedia
+from time import gmtime, strftime
 from subprocess import call
 from google_speech import Speech
 from bs4 import BeautifulSoup
-import threading
-import wikipedia
-
-iris_voice = "~/"
-import threading, re
-
+from newsapi import NewsApiClient
 from pynput.keyboard import Key, Controller
 
+
+iris_voice = "~/"
 
 isfile = os.path.isfile('master_name')
 if isfile == True:
@@ -23,6 +22,8 @@ else:
     f = open('master_name','a+')
     f.write('{0}'.format(master_name))
     f.close()
+#API Keys
+newsapi = NewsApiClient(api_key='f88b2cec4f5d4e46a511706325e756de')
 
 # speech config
 speech_engine = pyttsx3.init()
@@ -70,13 +71,18 @@ def func():
                     Speech('Ok, tocando músicas recomendadas do gênero {0}.'.format(genre), lang).play()
                     thread.start()
 
-            except Exception as e:
-                print(e)
-     if "o que é" or "quem é" in l == True:
+                except Exception as e:
+                    print(e)
+    if "o que é" or "quem é" in l == True:
         wikipedia.set_lang('pt')
         search = wikipedia.summary(l, sentences=2)
-        Speech(search, lang).play()            
-
+        Speech(search, lang).play()     
+               
+    if "noticias" or "notícias" in l == True:
+        top_headlines = newsapi.get_top_headlines(country='br')
+        for news in top_headlines['articles'][:5]:
+            text = (news['title'])
+            Speech(text, lang).play()  
 
 def listen():
     with iris.Microphone() as source:
