@@ -7,7 +7,7 @@ from subprocess import call
 from google_speech import Speech
 from bs4 import BeautifulSoup
 import threading
-
+import wikipedia
 iris_voice = "~/"
 
 isfile = os.path.isfile('master_name')
@@ -64,7 +64,10 @@ def func():
 
             except Exception as e:
                 print(e)
-                
+     if "o que é" or "quem é" in l == True:
+        wikipedia.set_lang('pt')
+        search = wikipedia.summary(l, sentences=2)
+        Speech(search, lang).play()            
 
 
 def listen():
