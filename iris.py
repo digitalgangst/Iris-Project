@@ -6,14 +6,14 @@ import speech_recognition as iris
 from subprocess import call
 from google_speech import Speech
 from bs4 import BeautifulSoup
-<<<<<<< HEAD
 import threading
 import wikipedia
+
 iris_voice = "~/"
-=======
 import threading, re
+
 from pynput.keyboard import Key, Controller
->>>>>>> 8f1098f5e0caaeb9a7850e65be8d83cc89f3dd91
+
 
 isfile = os.path.isfile('master_name')
 if isfile == True:
