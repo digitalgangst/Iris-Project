@@ -1,14 +1,15 @@
 #!/usr/bin/python3
 # coding: utf-8
 import snowboydecoder, pyttsx3, os.path, wave, requests, os
-from time import gmtime, strftime
+from time import gmtime, strftime, time
 import speech_recognition as iris
 from subprocess import call
 from google_speech import Speech
 from bs4 import BeautifulSoup
-import threading, re, wikipedia
+import threading, re, wikipedia, json, pyowm
 from newsapi.newsapi_client import NewsApiClient
 from pynput.keyboard import Key, Controller
+from urllib.request import urlopen
 
 isfile = os.path.isfile('master_name')
 if isfile == True:
@@ -22,11 +23,16 @@ else:
 # speech config
 speech_engine = pyttsx3.init()
 speech_engine.setProperty('rate', 50) # noise config
+print('[*] Ajustando ruído de fundo.')
 recognizer = iris.Recognizer()
+with iris.Microphone() as source:
+    recognizer.adjust_for_ambient_noise(source)
+print('[+] OK./n')
 # key pressing config
 keyboard = Controller()
 #API Keys
 newsapi = NewsApiClient(api_key='f88b2cec4f5d4e46a511706325e756de')
+climaAPI = ('c5743b7436f81e619263925dca22e064')
 
 def func():
     master_name = open('master_name', 'r').read()
@@ -36,6 +42,34 @@ def func():
     music_y = ['Recomenda', 'recomenda', 'Recomende', 'recomende', 'Recomendação', 'recomendação']
     wiki_w = ['Quem é', 'quem é', 'Quem foi', 'quem foi', 'O que é', 'o que é']
     news_w = ['Noticias', 'noticias', 'Notícias', 'notícias', 'Notícia', 'notícia']
+    wheater_w = ['Clima', 'Previsão', 'Tempo', 'Temperatura', 'clima', 'previsão', 'tempo', 'temperatura']
+
+    if any(x in l for x in wheater_w):
+        url = 'http://ipinfo.io/json'
+        response = urlopen(url)
+        data = json.load(response)
+        city1 = data['city']
+
+        print(city1)
+
+        import pyowm, time
+        owm = pyowm.OWM(climaAPI)
+        city = owm.weather_at_place('{0}, BR'.format(city1))
+        weather = city.get_weather()
+        temp = weather.get_temperature('celsius')['temp']
+        city2 = owm.three_hours_forecast('{0}, BR'.format(city1))
+        chuvas = city2.will_have_rain()
+
+        if chuvas == True:
+            response_x = ('Está previsto chuvas para hoje.')
+        else:
+            response_x = ('Não está previsto chuvas para hoje.')
+
+        response = ('A temperatura em %s é de %d°' % (city1, temp))
+
+        Speech(response, lang).play()
+        time.sleep(0.5)
+        Speech(response_x, lang).play()
 
     if any(x in l for x in wiki_w):
         wikipedia.set_lang('pt')
