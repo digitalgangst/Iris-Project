@@ -1,15 +1,21 @@
 #!/usr/bin/python3
 # coding: utf-8
+
+###IMPORT
+
 import snowboydecoder, pyttsx3, os.path, wave, requests, os
-from time import gmtime, strftime, time
+import pyowm, time
+import threading, re, wikipedia, json, pyowm
 import speech_recognition as iris
 from subprocess import call
 from google_speech import Speech
 from bs4 import BeautifulSoup
-import threading, re, wikipedia, json, pyowm
 from newsapi.newsapi_client import NewsApiClient
 from pynput.keyboard import Key, Controller
 from urllib.request import urlopen
+from time import gmtime, strftime, time
+
+###Configs
 
 isfile = os.path.isfile('master_name')
 if isfile == True:
@@ -43,6 +49,27 @@ def func():
     wiki_w = ['Quem é', 'quem é', 'Quem foi', 'quem foi', 'O que é', 'o que é']
     news_w = ['Noticias', 'noticias', 'Notícias', 'notícias', 'Notícia', 'notícia']
     wheater_w = ['Clima', 'Previsão', 'Tempo', 'Temperatura', 'clima', 'previsão', 'tempo', 'temperatura']
+    price_quote_w = ['Cotação', 'cotação', 'Valor', 'valor', 'Preço', 'preço']
+
+    if any(x in l for x in price_quote_w):
+        def search_currency(currency):
+            with open('./json/moedas.json') as crrncy:
+                data = json.load(crrncy)
+                data = data[currency]
+                def api_price(data):
+                    request_api = requests.get("https://economia.awesomeapi.com.br/all")
+                    price = json.loads(request_api.text)
+                    price_quote = 'A cotação atual é de R$ '+price[data]['bid'][:4]
+                    Speech(price_quote, lang).play()
+                api_price(data)
+        try:
+            l = l.lower()
+            currency = re.findall(r'\w+$', l)[0]
+            search_currency(currency)
+        except:
+            error = ("Erro na API, tente novamente mais tarde.")
+            print(error)
+            Speech(error, lang).play()
 
     if any(x in l for x in wheater_w):
         url = 'http://ipinfo.io/json'
@@ -52,7 +79,7 @@ def func():
 
         print(city1)
 
-        import pyowm, time
+        
         owm = pyowm.OWM(climaAPI)
         city = owm.weather_at_place('{0}, BR'.format(city1))
         weather = city.get_weather()
