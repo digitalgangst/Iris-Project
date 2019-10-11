@@ -63,7 +63,6 @@ def func():
                     Speech(price_quote, lang).play()
                 api_price(data)
         try:
-            l = l.lower()
             currency = re.findall(r'\w+$', l)[0]
             search_currency(currency)
         except:
@@ -95,7 +94,6 @@ def func():
         response = ('A temperatura em %s é de %d°' % (city1, temp))
 
         Speech(response, lang).play()
-        time.sleep(0.5)
         Speech(response_x, lang).play()
 
     if any(x in l for x in wiki_w):
