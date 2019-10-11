@@ -12,5 +12,19 @@
    "bitcoin":"BTC",
    "litecoin":"LTC",
    "ethereum":"ETH",
-   "ripple": "XRP"
+   "ripple": "XRP",
+   "Dólar":"USD",
+   "Dolar":"USD",
+   "Euro":"EUR",
+   "Dólar canadense":"CAD",
+   "Dolar canadense":"CAD",
+   "Libra esterlina":"GBP",
+   "Peso argentino":"ARS",
+   "Franco suíço":"CHF",
+   "Yuan":"CNY",
+   "Shekel":"YLS",
+   "Bitcoin":"BTC",
+   "Litecoin":"LTC",
+   "Ethereum":"ETH",
+   "Ripple": "XRP"
 }
